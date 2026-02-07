@@ -17,10 +17,12 @@ const __dirname = dirname(__filename);
 // ✅ CORS Configuration - IMPORTANT
 app.use(
   cors({
-    origin: ["http://localhost:5173", "http://localhost:5174"], // Both Vite ports
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+    origin: [
+      "http://localhost:5173",
+      "http://localhost:5174",
+      "https://blog-now2.vercel.app"
+    ],
+    credentials: true
   })
 );
 
