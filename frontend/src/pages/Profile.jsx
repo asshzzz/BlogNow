@@ -16,7 +16,7 @@ useEffect(() => {
 
   const fetchProfile = async () => {
     try {
-      const res = await fetch("http://localhost:8000/api/v1/users/profile", {
+      const res = await fetch("https://blognow-ckae.onrender.com/api/v1/users/profile", {
         headers: {
           "Authorization": `Bearer ${localStorage.getItem("token")}`, // 👈 token bhejna zaruri
         },

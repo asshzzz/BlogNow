@@ -57,7 +57,7 @@ export default function CreateBlog() {
         };
 
         // Use JSON format
-        const res = await fetch("http://localhost:8000/api/blogs", {
+        const res = await fetch("https://blognow-ckae.onrender.com/api/blogs", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

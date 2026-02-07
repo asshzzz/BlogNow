@@ -50,13 +50,13 @@ export default function MyBlogs() {
 
     // If it starts with /uploads
     if (imageField.startsWith("/uploads")) {
-      const url = `http://localhost:8000${imageField}`;
+      const url = `https://blognow-ckae.onrender.com${imageField}`;
       console.log("✅ Relative URL converted:", url);
       return url;
     }
 
     // If it's just a filename
-    const url = `http://localhost:8000/uploads/${imageField}`;
+    const url = `https://blognow-ckae.onrender.com/uploads/${imageField}`;
     console.log("✅ Filename converted:", url);
     return url;
   };

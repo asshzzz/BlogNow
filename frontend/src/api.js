@@ -1,7 +1,7 @@
 // src/api.js
 
-const API_URL = "http://localhost:8000/api/v1";
-const API_URL2 = "http://localhost:8000/api";
+const API_URL = "https://blognow-ckae.onrender.com/api/v1";
+const API_URL2 = "https://blognow-ckae.onrender.com/api";
 
 export const api = {
   // ========== AUTH ==========
