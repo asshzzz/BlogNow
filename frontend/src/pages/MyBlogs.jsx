@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { BookOpen, Edit3, Plus, Sparkles, Calendar, User, Home, Trash2 } from "lucide-react";
+import { BookOpen, Edit3, Plus, Calendar, User, Home, Trash2, ImageOff } from "lucide-react";
 import { api } from "../api";
 import { toast } from "react-toastify";
 
@@ -27,44 +27,29 @@ export default function MyBlogs() {
     fetchBlogs();
   }, [token]);
 
-  // ✅ FIXED: Better image URL handler
+  // ✅ Image URL handler
   const getImageUrl = (imageField) => {
-    if (!imageField) {
-      console.log("⚠️ No image field");
-      return null;
-    }
+    if (!imageField) return null;
 
-    console.log("🖼️ Processing image:", imageField);
-
-    // ✅ If it's a Base64 AI image
     if (imageField.startsWith("data:image")) {
-      console.log("✅ Base64 AI image found");
-      return imageField; // Return as-is
-    }
-
-    // If it's already a full URL
-    if (imageField.startsWith("http://") || imageField.startsWith("https://")) {
-      console.log("✅ Full URL:", imageField);
       return imageField;
     }
 
-    // If it starts with /uploads
-    if (imageField.startsWith("/uploads")) {
-      const url = `https://blognow-ckae.onrender.com${imageField}`;
-      console.log("✅ Relative URL converted:", url);
-      return url;
+    if (imageField.startsWith("http://") || imageField.startsWith("https://")) {
+      return imageField;
     }
 
-    // If it's just a filename
-    const url = `https://blognow-ckae.onrender.com/uploads/${imageField}`;
-    console.log("✅ Filename converted:", url);
-    return url;
+    if (imageField.startsWith("/uploads")) {
+      return `https://blognow-ckae.onrender.com${imageField}`;
+    }
+
+    return `https://blognow-ckae.onrender.com/uploads/${imageField}`;
   };
 
   // ✅ Format date helper
   const formatDate = (dateString) => {
     if (!dateString) return "Recently";
-    
+
     const date = new Date(dateString);
     const now = new Date();
     const diffTime = Math.abs(now - date);
@@ -75,34 +60,33 @@ export default function MyBlogs() {
     if (diffDays < 7) return `${diffDays} days ago`;
     if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
     if (diffDays < 365) return `${Math.floor(diffDays / 30)} months ago`;
-    
-    return date.toLocaleDateString('en-US', { 
-      year: 'numeric', 
-      month: 'short', 
-      day: 'numeric' 
+
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
     });
   };
 
   // ✅ Delete blog handler
   const handleDelete = async (blogId) => {
-    if (!window.confirm("⚠️ Are you sure you want to delete this blog? This action cannot be undone.")) {
+    if (!window.confirm("Are you sure you want to delete this blog? This action cannot be undone.")) {
       return;
     }
 
     setDeletingId(blogId);
-    
+
     try {
       const res = await api.deleteBlog(blogId, token);
-      
+
       if (res.error) {
         toast.error(res.error);
         return;
       }
 
-      // Remove from state
       setBlogs(blogs.filter(blog => blog._id !== blogId));
-      toast.success("🗑️ Blog deleted successfully!");
-      
+      toast.success("Blog deleted successfully");
+
     } catch (error) {
       console.error("Delete error:", error);
       toast.error("Failed to delete blog");
@@ -112,274 +96,170 @@ export default function MyBlogs() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-violet-900 via-purple-900 to-indigo-900 relative overflow-hidden">
-      {/* Animated background elements */}
-      <div className="absolute inset-0">
-        <div className="absolute top-20 left-20 w-96 h-96 bg-gradient-to-r from-pink-400 to-rose-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
-        <div className="absolute top-40 right-20 w-96 h-96 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000"></div>
-        <div className="absolute bottom-20 left-40 w-96 h-96 bg-gradient-to-r from-blue-400 to-cyan-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-4000"></div>
-        <div className="absolute bottom-40 right-40 w-96 h-96 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-6000"></div>
-      </div>
+    <div className="min-h-screen bg-[#FAFAF9]">
+      <div className="max-w-6xl mx-auto px-6 py-8">
+        {/* Back to Home */}
+        <Link
+          to="/"
+          className="inline-flex items-center gap-2 text-sm font-medium text-[#6B7280] hover:text-[#111827] transition-colors mb-8 group"
+        >
+          <Home className="w-4 h-4" />
+          Back to Home
+        </Link>
 
-      <div className="relative z-10 p-4 md:p-8">
-        {/* Back to Home Button */}
-        <div className="absolute top-6 left-6 z-20">
-          <Link
-            to="/"
-            className="inline-flex items-center gap-2 bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 hover:from-pink-600 hover:via-purple-600 hover:to-indigo-600 text-white font-semibold py-2.5 px-5 rounded-2xl shadow-xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300"
-          >
-            <Home className="w-5 h-5" />
-            Back to Home
-          </Link>
-        </div>
-
-        {/* Header Section */}
-        <div className="text-center mb-12 pt-16">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-purple-500 to-pink-500 rounded-3xl mb-6 shadow-2xl">
-            <BookOpen className="w-10 h-10 text-white" />
-          </div>
-          <h1 className="text-5xl md:text-7xl font-bold bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent mb-4">
+        {/* Header */}
+        <div className="mb-10">
+          <h1 className="text-3xl font-semibold tracking-tight text-[#111827] mb-1">
             My Blogs
           </h1>
-          <p className="text-white/80 text-xl md:text-2xl font-light">
-            Your creative journey awaits ✨
+          <p className="text-[#6B7280] text-sm">
+            Manage the stories you've published.
           </p>
         </div>
 
         {/* Loading State */}
         {isLoading ? (
-          <div className="flex items-center justify-center py-20">
-            <div className="relative">
-              <div className="w-16 h-16 border-4 border-white/20 border-t-pink-400 rounded-full animate-spin"></div>
-              <div className="absolute inset-0 w-16 h-16 border-4 border-transparent border-r-purple-400 rounded-full animate-spin animation-delay-1000"></div>
-            </div>
+          <div className="flex items-center justify-center py-24">
+            <div className="w-8 h-8 border-2 border-[#1F2937] border-t-transparent rounded-full animate-spin"></div>
           </div>
-          ) : blogs.length === 0 ? (
+        ) : blogs.length === 0 ? (
           /* Empty State */
-          <div className="flex flex-col items-center justify-center py-20">
-            <div className="backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl shadow-2xl p-12 max-w-md text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-gray-400 to-gray-500 rounded-2xl mb-6 shadow-lg">
-                <BookOpen className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-2xl font-bold text-white mb-4">No Blogs Yet</h3>
-              <p className="text-white/70 text-lg mb-8">
-                Start your writing journey and create your first masterpiece!
-              </p>
-              <Link
-                to="/create"
-                className="inline-flex items-center gap-2 bg-gradient-to-r from-pink-500 to-violet-500 hover:from-pink-600 hover:to-violet-600 text-white font-bold py-3 px-6 rounded-2xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
-              >
-                <Plus className="w-5 h-5" />
-                <span>Create Your First Blog</span>
-              </Link>
+          <div className="flex flex-col items-center justify-center py-24 text-center">
+            <div className="w-14 h-14 rounded-full bg-[#F3F4F6] flex items-center justify-center mb-5">
+              <BookOpen className="w-6 h-6 text-[#9CA3AF]" />
             </div>
+            <h3 className="text-lg font-semibold text-[#111827] mb-2">No blogs yet</h3>
+            <p className="text-sm text-[#6B7280] mb-6 max-w-sm">
+              You haven't published anything yet. Start writing your first story.
+            </p>
+            <Link
+              to="/create"
+              className="inline-flex items-center gap-2 bg-[#111827] text-white text-sm font-medium py-2.5 px-5 rounded-full hover:bg-[#1F2937] transition-colors"
+            >
+              <Plus className="w-4 h-4" />
+              Create your first blog
+            </Link>
           </div>
         ) : (
-          /* Blogs Grid */
-          <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {blogs.map((blog, index) => {
+          <>
+            {/* Blogs Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {blogs.map((blog) => {
                 const imageUrl = getImageUrl(blog.image);
-                
-                // Debug log for each blog
-                console.log(`Blog ${index + 1}:`, {
-                  title: blog.title,
-                  imageField: blog.image,
-                  imageUrl: imageUrl
-                });
 
                 return (
                   <div
                     key={blog._id}
-                    className="group backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl shadow-2xl overflow-hidden hover:bg-white/15 transition-all duration-500 transform hover:scale-[1.02] hover:shadow-3xl"
-                    style={{
-                      animationDelay: `${index * 100}ms`,
-                      animation: "fadeInUp 0.6s ease-out forwards",
-                    }}
+                    className="group bg-white border border-[#E5E7EB] rounded-2xl overflow-hidden hover:border-[#D1D5DB] hover:shadow-md transition-all duration-200 flex flex-col"
                   >
-                    {/* ✅ FIXED: Image Section with better error handling */}
-                    <div className="relative w-full h-56 overflow-hidden bg-gradient-to-br from-purple-500/20 to-pink-500/20">
+                    {/* Image */}
+                    <div className="relative w-full h-44 bg-[#F3F4F6] overflow-hidden">
                       {imageUrl ? (
                         <img
                           src={imageUrl}
                           alt={blog.title}
-                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                          onLoad={() => {
-                            console.log("✅ Image loaded successfully:", imageUrl);
-                          }}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                           onError={(e) => {
-                            console.error("❌ Failed to load image:", imageUrl);
-                            console.error("❌ Original image field:", blog.image);
-                            
-                            // Replace with placeholder
                             e.target.style.display = "none";
                             const parent = e.target.parentElement;
                             if (parent) {
                               parent.innerHTML = `
-                                <div class="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-purple-600 to-pink-600 p-4">
-                                  <svg class="w-16 h-16 mb-3 opacity-50 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" />
-                                  </svg>
-                                  <p class="text-sm font-semibold text-white mb-1">Image Not Available</p>
-                                  <p class="text-xs text-white/70">Check console for details</p>
+                                <div class="w-full h-full flex flex-col items-center justify-center bg-[#F3F4F6] text-[#9CA3AF]">
+                                  <p class="text-xs font-medium">Image not available</p>
                                 </div>
                               `;
                             }
                           }}
                         />
                       ) : (
-                        <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-purple-600 to-pink-600">
-                          <svg className="w-16 h-16 mx-auto mb-3 opacity-50 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
-                          </svg>
-                          <p className="text-lg font-semibold text-white">No Image</p>
+                        <div className="w-full h-full flex flex-col items-center justify-center text-[#9CA3AF]">
+                          <ImageOff className="w-6 h-6 mb-2" />
+                          <p className="text-xs font-medium">No image</p>
                         </div>
                       )}
-
-                      {/* Title Overlay */}
-                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
-                        <h2 className="text-xl font-bold text-white line-clamp-2">
-                          {blog.title}
-                        </h2>
-                      </div>
                     </div>
 
-                    {/* Blog Content */}
-                    <div className="p-6 relative">
-                      {/* Metadata */}
-                      <div className="flex items-center justify-between mb-4 text-white/60 text-sm">
-                        <div className="flex items-center gap-2">
-                          <Calendar className="w-4 h-4" />
-                          <span>{formatDate(blog.createdAt)}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <User className="w-4 h-4" />
-                          <span>By You</span>
-                        </div>
-                      </div>
+                    {/* Content */}
+                    <div className="p-5 flex flex-col flex-1">
+                      <h2 className="text-base font-semibold text-[#111827] mb-2 leading-snug line-clamp-2">
+                        {blog.title}
+                      </h2>
 
-                      {/* Content Preview */}
-                      <p className="text-white/70 text-base leading-relaxed line-clamp-3 mb-6">
+                      <p className="text-sm text-[#6B7280] leading-relaxed line-clamp-3 mb-4">
                         {blog.content}
                       </p>
 
-                      {/* Action Buttons */}
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center justify-between text-xs text-[#9CA3AF] mb-5 mt-auto">
+                        <span className="flex items-center gap-1.5">
+                          <Calendar className="w-3.5 h-3.5" />
+                          {formatDate(blog.createdAt)}
+                        </span>
+                        <span className="flex items-center gap-1.5">
+                          <User className="w-3.5 h-3.5" />
+                          By you
+                        </span>
+                      </div>
+
+                      {/* Actions */}
+                      <div className="flex items-center gap-2 pt-4 border-t border-[#F3F4F6]">
                         <Link
                           to={`/edit/${blog._id}`}
-                          className="flex-1 group/btn relative bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-bold py-3 px-4 rounded-2xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2"
+                          className="flex-1 flex items-center justify-center gap-1.5 text-sm font-medium text-[#374151] border border-[#E5E7EB] py-2 rounded-lg hover:bg-[#F9FAFB] hover:border-[#D1D5DB] transition-colors"
                         >
-                          <Edit3 className="w-4 h-4 group-hover/btn:rotate-12 transition-transform duration-300" />
-                          <span>Edit</span>
+                          <Edit3 className="w-3.5 h-3.5" />
+                          Edit
                         </Link>
 
                         <button
                           onClick={() => handleDelete(blog._id)}
                           disabled={deletingId === blog._id}
-                          className="group/btn relative bg-gradient-to-r from-red-500 to-rose-500 hover:from-red-600 hover:to-rose-600 text-white font-bold py-3 px-4 rounded-2xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                          className="flex-1 flex items-center justify-center gap-1.5 text-sm font-medium text-[#DC2626] border border-[#FCA5A5]/60 py-2 rounded-lg hover:bg-[#FEF2F2] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                           {deletingId === blog._id ? (
-                            <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                            <div className="w-3.5 h-3.5 border-2 border-[#DC2626]/30 border-t-[#DC2626] rounded-full animate-spin"></div>
                           ) : (
                             <>
-                              <Trash2 className="w-4 h-4 group-hover/btn:rotate-12 transition-transform duration-300" />
-                              <span>Delete</span>
+                              <Trash2 className="w-3.5 h-3.5" />
+                              Delete
                             </>
                           )}
                         </button>
                       </div>
-
-                      {/* Decorative Elements */}
-                      <div className="absolute top-4 right-4 w-2 h-2 bg-pink-400 rounded-full opacity-60"></div>
-                      <div className="absolute bottom-4 left-4 w-1 h-1 bg-purple-400 rounded-full opacity-40"></div>
                     </div>
                   </div>
                 );
               })}
             </div>
 
-            {/* Create New Blog Button */}
-            <div className="text-center mt-16">
+            {/* Create New Blog */}
+            <div className="text-center mt-12">
               <Link
                 to="/create"
-                className="inline-flex items-center gap-3 bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 hover:from-pink-600 hover:via-purple-600 hover:to-indigo-600 text-white font-bold py-4 px-8 rounded-3xl shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300 text-lg"
+                className="inline-flex items-center gap-2 bg-[#111827] text-white text-sm font-medium py-2.5 px-6 rounded-full hover:bg-[#1F2937] transition-colors"
               >
-                <Plus className="w-6 h-6" />
-                <span>Create New Blog</span>
-                <Sparkles className="w-6 h-6" />
+                <Plus className="w-4 h-4" />
+                Create new blog
               </Link>
             </div>
-          </div>
-        )}
 
-        {/* Footer Stats */}
-        {blogs.length > 0 && (
-          <div className="text-center mt-16 p-6 backdrop-blur-xl bg-white/5 rounded-3xl border border-white/10 max-w-md mx-auto">
-            <p className="text-white/70 text-lg">
-              📚 <span className="font-bold text-white">{blogs.length}</span>{" "}
-              {blogs.length === 1 ? "Blog" : "Blogs"} Created
-            </p>
-            <p className="text-white/50 text-sm mt-2">
-              Keep writing and sharing your amazing stories!
-            </p>
-          </div>
+            {/* Stats */}
+            <div className="text-center mt-10 pt-8 border-t border-[#E5E7EB]">
+              <p className="text-sm text-[#6B7280]">
+                <span className="font-semibold text-[#111827]">{blogs.length}</span>{" "}
+                {blogs.length === 1 ? "blog" : "blogs"} published
+              </p>
+            </div>
+          </>
         )}
       </div>
 
       <style jsx>{`
-        @keyframes blob {
-          0% {
-            transform: translate(0px, 0px) scale(1);
-          }
-          33% {
-            transform: translate(30px, -50px) scale(1.1);
-          }
-          66% {
-            transform: translate(-20px, 20px) scale(0.9);
-          }
-          100% {
-            transform: translate(0px, 0px) scale(1);
-          }
-        }
-
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        .animate-blob {
-          animation: blob 7s infinite;
-        }
-
-        .animation-delay-1000 {
-          animation-delay: 1s;
-        }
-
-        .animation-delay-2000 {
-          animation-delay: 2s;
-        }
-
-        .animation-delay-4000 {
-          animation-delay: 4s;
-        }
-
-        .animation-delay-6000 {
-          animation-delay: 6s;
-        }
-
         .line-clamp-2 {
           display: -webkit-box;
           -webkit-line-clamp: 2;
           -webkit-box-orient: vertical;
           overflow: hidden;
         }
-
         .line-clamp-3 {
           display: -webkit-box;
           -webkit-line-clamp: 3;

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { Mail, Lock, Eye, EyeOff, Sparkles, Heart } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff, ArrowRight } from "lucide-react";
 
 export default function Login() {
   const { login } = useAuth();
@@ -22,151 +22,101 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
-      {/* Animated Background Elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-pink-400 to-purple-600 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-yellow-400 to-pink-600 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
-        <div className="absolute top-40 left-40 w-80 h-80 bg-gradient-to-br from-green-400 to-blue-600 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
-        
-        {/* Floating Particles */}
-        <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-yellow-400 rounded-full animate-ping"></div>
-        <div className="absolute top-3/4 right-1/4 w-1 h-1 bg-pink-400 rounded-full animate-pulse"></div>
-        <div className="absolute top-1/2 left-3/4 w-3 h-3 bg-purple-400 rounded-full animate-bounce"></div>
-      </div>
-
-      {/* Main Login Card */}
-      <div className="relative z-10 bg-white/10 backdrop-blur-lg rounded-3xl shadow-2xl p-8 max-w-md w-full mx-4 border border-white/20">
-        {/* Glassmorphism overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-white/5 rounded-3xl"></div>
-        
-        <div className="relative z-10">
-          {/* Header with Icon */}
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-pink-500 to-purple-600 rounded-full mb-4 shadow-lg">
-              <Heart className="w-8 h-8 text-white animate-pulse" />
-            </div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent mb-2">
-              Welcome Back!
-            </h1>
-            <p className="text-white/70 text-sm">Sign in to continue your journey</p>
+    <div className="min-h-screen bg-[#FAFAF9] flex items-center justify-center px-6 py-12">
+      <div className="w-full max-w-md">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <div className="w-11 h-11 rounded-xl bg-[#111827] flex items-center justify-center mx-auto mb-5">
+            <Lock className="w-5 h-5 text-white" />
           </div>
+          <h1 className="text-2xl font-semibold tracking-tight text-[#111827] mb-1">
+            Welcome back
+          </h1>
+          <p className="text-sm text-[#6B7280]">
+            Sign in to continue to BlogNow.
+          </p>
+        </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Email Input */}
-            <div className="relative group">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Mail className="h-5 w-5 text-purple-400 group-focus-within:text-pink-400 transition-colors duration-300" />
+        {/* Form Card */}
+        <div className="bg-white border border-[#E5E7EB] rounded-2xl shadow-sm p-8">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+            {/* Email */}
+            <div>
+              <label className="block text-sm font-medium text-[#374151] mb-1.5">
+                Email address
+              </label>
+              <div className="relative">
+                <Mail className="w-4 h-4 text-[#9CA3AF] absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="you@example.com"
+                  className="w-full pl-10 pr-3.5 py-2.5 rounded-lg border border-[#E5E7EB] text-sm text-[#111827] placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#4F46E5]/20 focus:border-[#4F46E5] transition-colors"
+                  required
+                />
               </div>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter your email"
-                className="w-full pl-10 pr-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-pink-400 focus:border-transparent backdrop-blur-sm transition-all duration-300 hover:bg-white/20"
-                required
-              />
             </div>
 
-            {/* Password Input */}
-            <div className="relative group">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Lock className="h-5 w-5 text-purple-400 group-focus-within:text-pink-400 transition-colors duration-300" />
+            {/* Password */}
+            <div>
+              <label className="block text-sm font-medium text-[#374151] mb-1.5">
+                Password
+              </label>
+              <div className="relative">
+                <Lock className="w-4 h-4 text-[#9CA3AF] absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Enter your password"
+                  className="w-full pl-10 pr-10 py-2.5 rounded-lg border border-[#E5E7EB] text-sm text-[#111827] placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#4F46E5]/20 focus:border-[#4F46E5] transition-colors"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#9CA3AF] hover:text-[#6B7280] transition-colors"
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
               </div>
-              <input
-                type={showPassword ? "text" : "password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter your password"
-                className="w-full pl-10 pr-12 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-pink-400 focus:border-transparent backdrop-blur-sm transition-all duration-300 hover:bg-white/20"
-                required
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute inset-y-0 right-0 pr-3 flex items-center"
-              >
-                {showPassword ? (
-                  <EyeOff className="h-5 w-5 text-purple-400 hover:text-pink-400 transition-colors duration-300" />
-                ) : (
-                  <Eye className="h-5 w-5 text-purple-400 hover:text-pink-400 transition-colors duration-300" />
-                )}
-              </button>
             </div>
 
-            {/* Submit Button */}
+            {/* Submit */}
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl hover:scale-105 focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-offset-2 focus:ring-offset-transparent transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed group"
+              className="mt-2 bg-[#111827] text-white text-sm font-medium py-2.5 rounded-lg hover:bg-[#1F2937] transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
-              <div className="flex items-center justify-center space-x-2">
-                {isLoading ? (
-                  <>
-                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                    <span>Signing In...</span>
-                  </>
-                ) : (
-                  <>
-                    <span>Sign In</span>
-                    <Sparkles className="w-5 h-5 group-hover:animate-spin" />
-                  </>
-                )}
-              </div>
+              {isLoading ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                  Signing in…
+                </>
+              ) : (
+                <>
+                  Sign in
+                  <ArrowRight className="w-4 h-4" />
+                </>
+              )}
             </button>
           </form>
 
           {/* Footer */}
-          <div className="mt-8 text-center">
-            <p className="text-white/70 text-sm mb-4">
+          <div className="text-center mt-6 pt-6 border-t border-[#F3F4F6]">
+            <p className="text-sm text-[#6B7280]">
               Don't have an account?{" "}
-              <Link 
-                to="/signup" 
-                className="text-pink-400 hover:text-pink-300 font-medium hover:underline transition-colors duration-300"
+              <Link
+                to="/signup"
+                className="text-[#4F46E5] font-medium hover:text-[#4338CA] transition-colors"
               >
-                Create one here
+                Create one
               </Link>
             </p>
-            
-            {/* Social Login Placeholder */}
-            <div className="flex items-center justify-center space-x-4 mt-6">
-              <div className="h-px flex-1 bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
-              <span className="text-white/50 text-xs px-2">Or continue with</span>
-              <div className="h-px flex-1 bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
-            </div>
-            
-            <div className="flex justify-center space-x-3 mt-4">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center cursor-pointer hover:scale-110 transition-transform duration-300 shadow-lg">
-                <span className="text-white text-sm font-bold">G</span>
-              </div>
-              <div className="w-10 h-10 bg-gradient-to-br from-gray-700 to-gray-800 rounded-full flex items-center justify-center cursor-pointer hover:scale-110 transition-transform duration-300 shadow-lg">
-                <span className="text-white text-sm font-bold">A</span>
-              </div>
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-700 rounded-full flex items-center justify-center cursor-pointer hover:scale-110 transition-transform duration-300 shadow-lg">
-                <span className="text-white text-sm font-bold">F</span>
-              </div>
-            </div>
           </div>
         </div>
       </div>
-
-      <style jsx>{`
-        @keyframes blob {
-          0% { transform: translate(0px, 0px) scale(1); }
-          33% { transform: translate(30px, -50px) scale(1.1); }
-          66% { transform: translate(-20px, 20px) scale(0.9); }
-          100% { transform: translate(0px, 0px) scale(1); }
-        }
-        .animate-blob {
-          animation: blob 7s infinite;
-        }
-        .animation-delay-2000 {
-          animation-delay: 2s;
-        }
-        .animation-delay-4000 {
-          animation-delay: 4s;
-        }
-      `}</style>
     </div>
   );
 }
